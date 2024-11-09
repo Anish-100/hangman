@@ -7,7 +7,7 @@ int main() {
     // Load DLL
     HMODULE dll = LoadLibrary(TEXT("sfml-graphics-2.dll"));
     if (dll == NULL) {
-        std::cerr << "Could not load the DLL" << std::endl;
+        std::cerr << " Anish Could not load the DLL" << std::endl;
         return 1;
     }
 
