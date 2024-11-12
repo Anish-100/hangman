@@ -7,8 +7,9 @@
 #include <cstdlib>
 #include <ctype.h>
 #include <stdio.h>
+#include <ctime>
 #include <SFML/Graphics.hpp>
-#define STB_PERLIN_IMPLEMENTATION
+
 
 using namespace std; 
 //function headers
@@ -31,14 +32,17 @@ string secretWordnotMod;
 int attempts_left;
 vector<char> guessed_letters;
 int temp_index =0;
-string file_name = "Secret_Word_Bank.csv";
-
+ string file_name = "C:/Users/anish/Documents/hangman/Secret_Word_Bank.csv";
 const int MAX_ATTEMPTS = 6;
 
 // Initialize the game by setting up the secret word and other variables
 void initialize() {
     srand(time(0));  // Seed for randomization
     vector<string> words_file = words_from_file(file_name);
+    if (words_file.empty()) {
+    cout << "Error: No words found in the file or file could not be opened." << endl;
+    exit(1);  // Exit the program if there are no words
+    }   
     secret_word = get_random_word(words_file);
     current_word = string(secret_word.length(), '_');
     for(int i =0; i< printed_word.length();i++)
@@ -91,28 +95,31 @@ bool play() {
 // Function to load words from a file
 vector<string> words_from_file(const string& file_name) {
     ifstream file(file_name);
-    vector<string> words_arr;
     string word;
     string line;
-
-    if (file.is_open()) {
+    vector <string> words_arr;
+    if (file.is_open()) 
+    {
         while (getline(file, line)) {
             stringstream ss(line);
             while (getline(ss, word, ',')) {
-                if (word !="")
+                if (!word.empty())
                     words_arr.push_back(word);
+                
             }
         }
         file.close();
     } else {
         cout << "Error opening file!" << endl;
-    }
+            }
 
     return words_arr;
 }
 
 // Select a random word from the word bank
 string get_random_word(vector<string>& words_arr) {
+
+
     int temp_index = rand() % words_arr.size();
     string ac_word = words_arr[temp_index];
     printed_word = ac_word;
@@ -122,10 +129,9 @@ string get_random_word(vector<string>& words_arr) {
         if(ac_word[i] == ' ')
         {
             ac_word.erase(i,1);
-            i-=2;
              // used as a backend word
         }
-        i++;
+        ++i;
     }
     return ac_word;
 }
