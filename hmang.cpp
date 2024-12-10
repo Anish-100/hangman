@@ -14,7 +14,7 @@ string getDisplayWord(const string& word,
         if (guessedLetters.count(tolower(c))) {
             display += tolower(c);
         } else if(guessedLetters.count(toupper(c))){
-            display += toupper(c);
+            display += tolower(c);
         }else if(c ==' '){
             display += " ";
         }else{
