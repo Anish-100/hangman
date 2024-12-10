@@ -1,35 +1,14 @@
-#include<hmansfml.h>
+#include <hmang.h>
 
-/* Input: file_name
- * Output: Vector<string> of words from a file
- * Function: Load words from a file into a vector<string>
+/* Input: string word, set of characters guessed Letters
+ * Output: string
+ * Function: Generate the Display and Actual Word
  */
-void setWordList(const std::vector<std::string>& newWordList) 
+ 
+string getDisplayWord(const string& word, 
+                           const set<char>& guessedLetters) 
 {
-    wordList = newWordList;
-}
-
-/* Input: file_name
- * Output: Vector<string> of words from a file
- * Function: Load words from a file into a vector<string>
- */
-std::string getRandomWordTest() 
-{
-    if (wordList.empty()) {
-        throw std::runtime_error("Wordlist is empty!");
-    }
-    srand(static_cast<unsigned>(time(0)));
-    return wordList[rand() % wordList.size()];
-}
-
-/* Input: file_name
- * Output: Vector<string> of words from a file
- * Function: Load words from a file into a vector<string>
- */
-std::string getDisplayWord(const std::string& word, 
-                           const std::set<char>& guessedLetters) 
-{
-    std::string display;
+    string display;
     cout <<"Debug: Actual Word :"<< word  <<endl;
     for (char c : word) {
         if (guessedLetters.count(tolower(c))) {
@@ -43,12 +22,12 @@ std::string getDisplayWord(const std::string& word,
         }
         display += " ";
     }
-    cout << "Debug: Display String" <<display<<endl;
+    cout << "Debug: Display String :" <<display<<endl;
     return display;
 }
 
-/* Input: file_name
- * Output: Vector<string> of words from a file
+/* Input: string file_name
+ * Output: vector<string> of words loaded from the file
  * Function: Load words from a file into a vector<string>
  */
 vector<string> wordsFromFile(const string& file_name) 
@@ -67,17 +46,17 @@ vector<string> wordsFromFile(const string& file_name)
             }
         }
         file.close();
-        cout << "Obtained File:" <<file_name<<endl;
+        cout << "Debug: Obtained File:" <<file_name<<endl;
     } else {
-        cout << "Error opening file!" << endl;
+        cout << "Debug: Error opening file!" << endl;
     }
-
     return words_arr;
 }
 
-/* Input: Vector<string> of words 
- * Output: string
- * Function: get a random word
+/* Input: vector<string> of words 
+ * Output: string Random Word 
+ * Function: getRandomWord
+ * returns a random word from the list
  */
 string getRandomWord(vector<string>& wordsArr) 
 {
@@ -88,7 +67,7 @@ string getRandomWord(vector<string>& wordsArr)
 
 /* Input: sf::RenderWindow& window, int wrongGuesses
  * Output: void
- * Function: Process each character and create hangman if guess is incorrect
+ * Function: Process each character and draws a hangman if guess is incorrect
  */
 
 void drawHangman(sf::RenderWindow& window, int wrongGuesses) 
@@ -171,11 +150,17 @@ void drawHangman(sf::RenderWindow& window, int wrongGuesses)
     }
 }
 
+/* Input: sf::VideoMode& desktop,sf::RenderWindow& window,  
+                        sf::Texture &texture, sf::Sprite& sprite
+ * Output: int
+ * Function: Sets up the Game Background
+ */
+
 int setupGameBackground(sf::VideoMode& desktop,sf::RenderWindow& window,  
                         sf::Texture &texture, sf::Sprite& sprite)
 {   
     if (!texture.loadFromFile(BACKGROUND)) { 
-        std::cerr << "Error: Could not load jpg image!" << std::endl;
+        cerr << "Error: Could not load jpg image!" << endl;
         return 0;
     } 
 
@@ -193,6 +178,12 @@ int setupGameBackground(sf::VideoMode& desktop,sf::RenderWindow& window,
     return 1;
 }
 
+/* Input: sf::Font& font,sf::Text& wordDisplay, 
+          sf::Text& messageDisplay, 
+          sf::Text& wrongLettersDisplay
+ * Output: Void
+ * Function: Sets up the Text Display
+ */
 void setupText(sf::Font& font,sf::Text& wordDisplay, 
                sf::Text& messageDisplay, 
                sf::Text& wrongLettersDisplay)
@@ -214,9 +205,9 @@ void setupText(sf::Font& font,sf::Text& wordDisplay,
     wrongLettersDisplay.setPosition(400, 400);
 }
 
-/* Input: file_name
- * Output: Vector<string> of words from a file
- * Function: Load words from a file into a vector<string>
+/* Input: void
+ * Output: Void
+ * Function: Sets up the Text Display
  */
 void initialize(void) 
 {
@@ -261,15 +252,15 @@ int main()
     window.setFramerateLimit(FRAMERATELIMIT);
 
     // Find out the desktop resolution
-    std::cout << "Desktop Resolution: " << desktop.width << "x" << desktop.height << endl;
+    cout << "Desktop Resolution: " << desktop.width << "x" << desktop.height << endl;
 
     if(!setupGameBackground(desktop,window,texture,sprite)){
-        std::cout << "Error in Setting up Game Window"<<endl;
+        cout << "Error in Setting up Game Window"<<endl;
         return 0;
     }
 
     if (!font.loadFromFile(FONTNAME)) { // Replace with a valid font file path
-        std::cerr << "Error loading font! "+ FONTNAME << endl;
+        cerr << "Error loading font! "+ FONTNAME << endl;
         return 0;
     }
     setupText(font,wordDisplay, messageDisplay, wrongLettersDisplay);
@@ -341,13 +332,13 @@ int main()
             window.display();
 
             // End game on win/loss
-            if (wrongGuesses >= maxWrongGuesses || displayWord.find('_') == std::string::npos) {
+            if (wrongGuesses >= maxWrongGuesses || displayWord.find('_') == string::npos) {
                 sf::sleep(sf::seconds(5));
                 window.close();
             }
         }
-    } catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+    } catch (const runtime_error& e) {
+        cerr << "Error: " << e.what() << "\n";
         return -1;
     }
 
